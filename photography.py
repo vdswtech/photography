@@ -7,6 +7,7 @@ def arguments():
 
     parser.add_argument('-d', '--dir', help="Specify a directory of images to process")
     parser.add_argument('-i', '--image', help="Specify a image to process")
+    parser.add_argument('-I', '--index', action='store_true', help="Generate index.html")
     parser.add_argument('-V', '--version', action='store_true', help="Show version number and exit.")
     parser.add_argument('-v', '--verbose', action='store_true', help="Be verbose.")
 
@@ -15,7 +16,7 @@ def arguments():
 def process(filepath):
     pass
 
-def build_index(images):
+def build_index(filepath):
     pass
 
 def main():
