@@ -9,7 +9,7 @@ def arguments():
     parser = argparse.ArgumentParser(description='Tool written to manage static website for photography.\nWritten by Victoria Wolter')
 
     parser.add_argument('-i', '--image', help="Specify a image to process.")
-    parser.add_argument('-I', '--index', action='store_true', help="Generate index.html.")
+    parser.add_argument('-I', '--index', help="Generate index.html.")
     parser.add_argument('-l', '--log', action='store_true', help="Log events to file.")
     parser.add_argument('-L', '--logfile', help="Specify a logfile to write to. Must set the log flag with this.")
     parser.add_argument('-V', '--version', action='store_true', help="Show version number and exit.")
@@ -40,7 +40,7 @@ def generate_html_image(image_path, exif_data):
     html += "<body>\n"
     html += "\t<table>\n"
     html += "\t\t<tr>\n"
-    html += "\t\t\t<td rowspan=\"3\"><img src=\"" + image_path + "\" width=\"1024\"/></td>\n"
+    html += "\t\t\t<td><img src=\"" + image_path.split('/')[1] + "\" height=\"1024\"/></td>\n"
     html += "\t\t\t<td>ISO: " + str(exif_data[0]) + " Lens: " + str(exif_data[1]) + " Exposure: " + str(exif_data[2]) + "</td>\n"
     html += "\t\t</tr>\n"
     html += "\t</table>\n"
@@ -59,8 +59,17 @@ def write_image_html(html, image):
     f.write(html)
     f.close()
 
-def build_index(args, filepath):
-    pass
+def build_index(args, working_dir):
+    f = open("index.html", "w")
+    f.write("<!DOCTYPE html>\n\n<html>\n\t<head>\n\t\t<title>Victoria Wolter Photography</title>\n\t</head>\n\t<body>\n")
+    for dirname in os.listdir(working_dir):
+        if os.path.isdir(working_dir + dirname):
+            f.write("\t\t<h2>" + dirname + "</h2>\n")
+            for files in os.listdir(working_dir + dirname):
+                if files.split('.')[1] == 'html':
+                    f.write("\t\t<a href=\"" + working_dir + dirname + "/" + files.split('.')[0] + ".html\"><img src=\"" + working_dir + dirname + "/" + files.split('.')[0] + "_thumb.jpg\" width=100px /></a>\n")
+    f.write("\t\t<footer>Copyright 2023 Victoria Wolter</footer>\n\t</body>\n</html>\n")
+    f.close()
 
 def verbose(args, message):
     if args.verbose:
@@ -83,12 +92,11 @@ def main():
     else:
         log_file = logfile
 
-    logfile = open(log_file, "a")
-
     if args.image != None:
         process(args, args.image)
 
-    logfile.close()
+    if args.index != None:
+        build_index(args, args.index)
 
 if __name__ == "__main__":
     main()
