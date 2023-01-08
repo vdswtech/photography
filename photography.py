@@ -8,7 +8,6 @@ import sys
 def arguments():
     parser = argparse.ArgumentParser(description='Tool written to manage static website for photography.\nWritten by Victoria Wolter')
 
-    parser.add_argument('-d', '--dir', help="Specify a directory of images to process.")
     parser.add_argument('-i', '--image', help="Specify a image to process.")
     parser.add_argument('-I', '--index', action='store_true', help="Generate index.html.")
     parser.add_argument('-l', '--log', action='store_true', help="Log events to file.")
