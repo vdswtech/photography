@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+from PIL import Image
 import argparse
+import exifread
 import os
 import sys
 
@@ -16,8 +18,41 @@ def arguments():
 
     return parser.parse_args()
 
-def process(args, filepath):
-    pass
+def thumbnail(path):
+    im = Image.open(path)
+    width, height = im.size
+    thumb = path.rsplit('.', 1)[0] + "_thumb." + path.rsplit('.', 1)[1]
+    if height > 1024:
+        width = (height / 1024) * width
+        height = 1024
+    MAX_SIZE = (int(width), int(height))
+    im.thumbnail(MAX_SIZE)
+    im.save(thumb, "JPEG")
+
+def exif_data(path):
+    f = open(path, 'rb')
+    tags = exifread.process_file(f)
+    exif = [tags["EXIF ISOSpeedRatings"], tags["EXIF LensModel"], tags["EXIF ExposureTime"]]
+    f.close()
+    return exif
+
+def generate_html_image(image_path, exif_data):
+    html = "<!DOCTYPE html>\n\n<html>\n<head>\n\t<title>" + image_path.split('/')[-1] + "</title>\n</head>\n"
+    html += "<body>\n"
+    html += "\t<table>\n"
+    html += "\t\t<tr>\n"
+    html += "\t\t\t<td rowspan=\"3\"><img src=\"" + image_path + "\" width=\"1024\"/></td>\n"
+    html += "\t\t\t<td>ISO: " + str(exif_data[0]) + " Lens: " + str(exif_data[1]) + " Exposure: " + str(exif_data[2]) + "</td>\n"
+    html += "\t\t</tr>\n"
+    html += "\t</table>\n"
+    html += "\t<footer>Copyright 2023 Victoria Wolter</footer>\n"
+    html += "</body>\n</html>"
+    return html
+
+def process(args, image):
+    thumbnail(image)
+    exif = exif_data(image)
+    print(generate_html_image(image, exif))
 
 def build_index(args, filepath):
     pass
@@ -44,6 +79,9 @@ def main():
         log_file = logfile
 
     logfile = open(log_file, "a")
+
+    if args.image != None:
+        process(args, args.image)
 
     logfile.close()
 
