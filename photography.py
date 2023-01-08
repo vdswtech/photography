@@ -45,13 +45,19 @@ def generate_html_image(image_path, exif_data):
     html += "\t\t</tr>\n"
     html += "\t</table>\n"
     html += "\t<footer>Copyright 2023 Victoria Wolter</footer>\n"
-    html += "</body>\n</html>"
+    html += "</body>\n</html>\n"
     return html
 
 def process(args, image):
     thumbnail(image)
     exif = exif_data(image)
-    print(generate_html_image(image, exif))
+    write_image_html(generate_html_image(image, exif), image)
+
+def write_image_html(html, image):
+    html_file = image.split('.')[0] + ".html"
+    f = open(html_file, "w")
+    f.write(html)
+    f.close()
 
 def build_index(args, filepath):
     pass
