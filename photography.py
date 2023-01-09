@@ -63,11 +63,11 @@ def build_index(args, working_dir):
     f = open("index.html", "w")
     f.write("<!DOCTYPE html>\n\n<html>\n\t<head>\n\t\t<title>Victoria Wolter Photography</title>\n\t</head>\n\t<body>\n")
     for dirname in os.listdir(working_dir):
-        if os.path.isdir(working_dir + dirname):
+        if os.path.isdir(working_dir + "/" + dirname):
             f.write("\t\t<h2>" + dirname + "</h2>\n")
-            for files in os.listdir(working_dir + dirname):
+            for files in os.listdir(working_dir + "/" + dirname):
                 if files.split('.')[1] == 'html':
-                    f.write("\t\t<a href=\"" + working_dir + dirname + "/" + files.split('.')[0] + ".html\"><img src=\"" + working_dir + dirname + "/" + files.split('.')[0] + "_thumb.jpg\" width=100px /></a>\n")
+                    f.write("\t\t<a href=\"" + working_dir + "/" + dirname + "/" + files.split('.')[0] + ".html\"><img src=\"" + working_dir + "/" +dirname + "/" + files.split('.')[0] + "_thumb.jpg\" width=100px /></a>\n")
     f.write("\t\t<footer>Copyright 2023 Victoria Wolter</footer>\n\t</body>\n</html>\n")
     f.close()
 
